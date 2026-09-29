@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 import unittest
+from enum import Enum
 
 
 @dataclass(frozen=True)
@@ -22,12 +23,32 @@ class Camera:
     distance: Range
     light: Range
 
+class Axis(Enum):
+    DISTANCE = "distance"
+    LIGHT = "light"
 
-def get_sample_points(target: Range, cameras: List[Camera], axis: str) -> List[float]:
+    def range_of(self, camera: "Camera") -> Range:
+        match self:
+            case Axis.DISTANCE:
+                return camera.distance
+            case Axis.LIGHT:
+                return camera.light
+
+
+def get_sample_points(target: Range, cameras: List[Camera], axis: Axis) -> List[float]:
+    # Example Input/Output
+    # Inputs
+    # target: Range = [0, 10], 
+    # cameras: List[Camera] = [{distance: [-1, 3]}, {distance: [4, 6]}, {distance: [6, 11]}], 
+    # axis = Axis.DISTANCE
+
+    # Output
+    # sorted_points = [0, 3, 4, 6, 10]
+    # midpoints = [1.5, 3.5, 5, 8]
     points = {target.low, target.high}
 
     for camera in cameras:
-        camera_range = getattr(camera, axis)
+        camera_range = axis.range_of(camera)
         for edge in (camera_range.low, camera_range.high):
             if target.contains(edge):
                 points.add(edge)
