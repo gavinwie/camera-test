@@ -27,7 +27,7 @@ class Axis(Enum):
     DISTANCE = "distance"
     LIGHT = "light"
 
-    def range_of(self, camera: "Camera") -> Range:
+    def range_of(self, camera: Camera) -> Range:
         match self:
             case Axis.DISTANCE:
                 return camera.distance
@@ -79,8 +79,8 @@ def cameras_cover_target(
     if not cameras:
         return False
 
-    distance_points = get_sample_points(target_distance, cameras, "distance")
-    light_points = get_sample_points(target_light, cameras, "light")
+    distance_points = get_sample_points(target_distance, cameras, Axis.DISTANCE)
+    light_points = get_sample_points(target_light, cameras, Axis.LIGHT)
 
     for d in distance_points:
         for l in light_points:
